@@ -15,7 +15,8 @@ class MigrationFiles
 
     public function add(array $array): void {
       // if(in_array($array['module'],$this->modules)   && ((empty($array['permission'])) ||  $this->user->isAbleTo($array['permission']))){
-            $this->files[] = $array;
+                 $this->files= array_merge($this->files,$array);
+
         // }
     }
 }
