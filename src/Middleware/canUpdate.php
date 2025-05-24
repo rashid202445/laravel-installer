@@ -29,10 +29,13 @@ class canUpdate
                 if (! $canInstall->alreadyInstalled()) {
                     return redirect()->route('LaravelInstaller::welcome');
                 }
-                $update_checker = new UpdateChecker;
-                event(new BeforeCheckingUpdate($request, $update_checker));
+                // $update_checker = new UpdateChecker;
+                // event(new BeforeCheckingUpdate($request, $update_checker));
 
-                if ($this->alreadyUpdated() || $update_checker->check) {
+                // if ($this->alreadyUpdated() || $update_checker->check) {
+                //     abort(404);
+                // }
+                 if ($this->alreadyUpdated() ) {
                     abort(404);
                 }
                 break;
