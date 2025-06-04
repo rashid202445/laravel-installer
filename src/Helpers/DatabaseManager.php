@@ -21,11 +21,13 @@ class DatabaseManager
         $outputLog = new BufferedOutput;
 
         $this->sqlite($outputLog);
-$this->migrateP($outputLog);
-     $this->seed($outputLog);
-       return $this->response(trans('installer_messages.final.finished'), 'success', $outputLog);
+        $r = $this->migrateP($outputLog);
+        if (!is_Array($r)) {
+            $r =   $this->seed($outputLog);
+        }
+        return !is_Array($r) ? $this->response(trans('installer_messages.final.finished'), 'success', $outputLog) : $r;
     }
-     /**
+    /**
      * Migrate and seed the database.
      *
      * @return array
@@ -36,8 +38,7 @@ $this->migrateP($outputLog);
 
         $this->sqlite($outputLog);
         $this->migrateP($outputLog);
-        //  $this->seed($outputLog);
-       return $this->response(trans('installer_messages.final.finished'), 'success', $outputLog);
+        return $this->response(trans('installer_messages.final.finished'), 'success', $outputLog);
     }
 
     /**
@@ -49,7 +50,7 @@ $this->migrateP($outputLog);
     private function migrateP(BufferedOutput $outputLog)
     {
         try {
-            Artisan::call('migrate', ['--force'=> true], $outputLog);
+            Artisan::call('migrate', ['--force' => true], $outputLog);
         } catch (Exception $e) {
             return $this->response($e->getMessage(), 'error', $outputLog);
         }
@@ -104,7 +105,7 @@ $this->migrateP($outputLog);
                 touch($database);
                 DB::reconnect(Config::get('database.default'));
             }
-            $outputLog->write('Using SqlLite database: '.$database, 1);
+            $outputLog->write('Using SqlLite database: ' . $database, 1);
         }
     }
 }

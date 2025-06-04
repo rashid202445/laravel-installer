@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Facades\ModuleFacade as Module;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-use Rashid\LaravelInstaller\Events\{AfterUpdate,GetMigrationFiles};
+use Rashid\LaravelInstaller\Events\{AfterUpdate, GetMigrationFiles};
 use Rashid\LaravelInstaller\Helpers\MigrationFiles;
 
 class UpdateController extends Controller
@@ -35,33 +35,10 @@ class UpdateController extends Controller
     {
         // update custom code
 
-        // $ranMigrations = \DB::table('migrations')->pluck('migration');
-        // // $modules = Module::allModules();
 
-        // // $migrationFiles = collect(File::glob(database_path('migrations/*.php')))
-        // //     ->map(function ($path) {
-        // //         return File::name($path);
-        // //     });
-        //            $migrationFiles = collect([]);
-        //     $migration_files= new MigrationFiles;
-        //    $migration_files->add([database_path('migrations/*.php')]) ;
-        // event(new GetMigrationFiles( $migration_files));
-
-        // foreach ( $migration_files->files as $key => $module) {
-        //     // Get the module directorie in your project
-        //     // $directory = "packages/workdo/" . $module->name . "/src/Database/Migrations";
-
-        //     $files = collect(File::glob($module))
-        //         ->map(function ($path) {
-        //             return File::name($path);
-        //         });
-        //     $migrationFiles = $migrationFiles->merge($files);
-        // }
-        // // Calculate the pending migrations by diffing the two lists
-        // $pendingMigrations = $migrationFiles->diff($ranMigrations);
- $migrations = $this->getMigrations();
+        $migrations = $this->getMigrations();
         $dbMigrations = $this->getExecutedMigrations();
-        return view('vendor.installer.update.overview', ['numberOfUpdatesPending' =>count($migrations) - count($dbMigrations)]);
+        return view('vendor.installer.update.overview', ['numberOfUpdatesPending' => count($migrations) - count($dbMigrations)]);
     }
 
     /**
@@ -73,19 +50,16 @@ class UpdateController extends Controller
     {
         $databaseManager = new DatabaseManager;
         $updateEnabled = filter_var(config('installer.updaterMigrateAndSeed'), FILTER_VALIDATE_BOOLEAN);
-        if($updateEnabled){
+        if ($updateEnabled) {
             $response = $databaseManager->migrateAndSeed();
-        }
-        else{
+        } else {
             $response = $databaseManager->migrate();
         }
-        
-        // $module = Module::find('LandingPage');
-        // if ($module) {
-        //     $module->enable();
-        //     Artisan::call('package:seed LandingPage');
-        // }
-        event(new AfterUpdate($request));
+
+        if ($response['status'] == 'success') {
+            event(new AfterUpdate($request));
+        }
+
 
         return redirect()->route('LaravelUpdater::final')
             ->with(['message' => $response]);
