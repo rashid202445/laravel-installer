@@ -1,15 +1,11 @@
 {
-    "name": "rashid202445/laravel-installer",
+    "name": "rashidsiaghi/laravel-installer",
     "description": "Laravel web installer",
     "license": "MIT",
     "authors": [
         {
             "name": "Rachid Al-Siyaghi",
             "email": "rashid201143@gmail.com"
-        },
-        {
-            "name": "Jeremy Kenedy",
-            "email": "jeremykenedy@gmail.com"
         }
     ],
     "require": {
